@@ -15,7 +15,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -101,6 +100,7 @@ fun InsertMhsView(
                 onBack = onBack,
                 showBackButton = true,
                 judul = "Tambah Mahasiswa",
+                modifier = modifier,
             )
             //Isi Body
             InsertBodyMhs(
