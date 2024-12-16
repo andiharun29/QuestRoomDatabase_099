@@ -26,8 +26,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.pertemuan9.ui.CustomWidget.appBar
 import com.example.pertemuan9.ui.navigation.AlamatNavigasi
+import com.example.pertemuan9.ui.viewmodel.FormErrorstate
+import com.example.pertemuan9.ui.viewmodel.MahasiswaEvent
 import com.example.pertemuan9.ui.viewmodel.MahasiswaViewModel
+import com.example.pertemuan9.ui.viewmodel.MhsUIState
 import com.example.pertemuan9.ui.viewmodel.PenyediaViewModel
 import kotlinx.coroutines.launch
 
@@ -35,64 +39,11 @@ object DestinasiInsert : AlamatNavigasi{
     override val route: String = "insert_mhs"
 }
 
-
-@Composable
-fun InsertMhsView(
-    onBack: () -> Unit,
-    onNavigate: () -> Unit,
-    modifier: Modifier = Modifier,
-    viewModel: MahasiswaViewModel = viewModel(factory = PenyediaViewModel.Factory) //Inisialisasi ViewModel
-){
-    val uiState = viewModel.uiState // Ambil UI State dari ViewModel
-    val snackbarHostState = remember { SnackbarHostState()}
-    val coroutineScope = rememberCoroutineScope()
-
-    // Observasi perubahan snackbarMessage
-    LaunchedEffect(uiState.snackBarMessage){
-        uiState.snackBarMessage?.let {message ->
-            coroutineScope.launch{
-                //Tampilkan snackbar
-                snackbarHostState.showSnackbar(message)
-                viewModel.Reset()
-            }
-        }
-    }
-    Scaffold(
-        Modifier, snackbarHost = {SnackbarHost(hostState = snackbarHostState)}
-    ) { padding ->
-        Column (
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp)
-        ) {
-            TopAppBar(
-                onBack = onBack,
-                showBackButton = true,
-                judul = "Tambah Mahasiswa"
-            )
-
-            //Isi Body
-            InsertBodyMhs(
-                uiState = uiState,
-                onValueChange = { updateEvent ->
-                    // Update state di ViewModel
-                    viewModel.updateState(updateEvent)
-                },
-                onClick = {
-                    viewModel.saveData()
-                    onNavigate()
-                }
-            )
-        }
-    }
-}
-
 @Composable
 fun InsertBodyMhs(
-    modifier: Modifier =Modifier,
-    onValueChange: (MahasiswaViewModel.MahasiswaEvent) -> Unit,
-    uiState: MahasiswaViewModel.MhsUIState,
+    modifier: Modifier = Modifier,
+    onValueChange: (MahasiswaEvent) -> Unit,
+    uiState: MhsUIState,
     onClick: () -> Unit
 ){
     Column (
@@ -115,12 +66,66 @@ fun InsertBodyMhs(
     }
 }
 
+@Composable
+fun InsertMhsView(
+    onBack: () -> Unit,
+    onNavigate: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: MahasiswaViewModel = viewModel(factory = PenyediaViewModel.Factory) //Inisialisasi ViewModel
+){
+    val uiState = viewModel.uiState // Ambil UI State dari ViewModel
+    val snackbarHostState = remember { SnackbarHostState()}
+    val coroutineScope = rememberCoroutineScope()
+
+    // Observasi perubahan snackbarMessage
+    LaunchedEffect(uiState.snackbarMessage){
+        uiState.snackbarMessage?.let {message ->
+            coroutineScope.launch{
+                //Tampilkan snackbar
+                snackbarHostState.showSnackbar(message)
+                viewModel.resetSnackBarMessage()
+            }
+        }
+    }
+    Scaffold(
+        modifier = Modifier,
+        snackbarHost = {SnackbarHost(hostState = snackbarHostState)}
+    ) { padding ->
+        Column (
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(16.dp)
+        ) {
+            appBar(
+                onBack = onBack,
+                showBackButton = true,
+                judul = "Tambah Mahasiswa",
+            )
+            //Isi Body
+            InsertBodyMhs(
+                uiState = uiState,
+                onValueChange = { updateEvent ->
+                    // Update state di ViewModel
+                    viewModel.updateState(updateEvent)
+                },
+                onClick = {
+                    viewModel.saveData()
+                    onNavigate()
+                }
+            )
+        }
+    }
+}
+
+
+
 @Preview(showBackground = true)
 @Composable
 fun FormMahasiswa(
-    mahasiswaEvent: MahasiswaViewModel.MahasiswaEvent = MahasiswaViewModel.MahasiswaEvent(),
-    onValueChange: (MahasiswaViewModel.MahasiswaEvent) -> Unit = {},
-    errorState: MahasiswaViewModel.FormErrorstate = MahasiswaViewModel.FormErrorstate(),
+    mahasiswaEvent: MahasiswaEvent = MahasiswaEvent(),
+    onValueChange: (MahasiswaEvent) -> Unit = {},
+    errorState: FormErrorstate = FormErrorstate(),
     modifier: Modifier = Modifier
 ){
     val jenisKelamin = listOf("Laki-laki", "Perempuan")
