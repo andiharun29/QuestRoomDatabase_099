@@ -16,3 +16,14 @@ data class DetailUiState(
 
 // Data class untuk menampung data yang akan di tampilkan di ui
 
+//memindahkan data dari entity ke ui
+fun Mahasiswa.toDetailUiEvent(): MahasiswaEvent{
+    return MahasiswaEvent(
+        nim = nim,
+        nama = nama,
+        jeniskelamin = jeniskelamin,
+        alamat = alamat,
+        kelas = kelas,
+        angkatan = angkatan
+    )
+}
