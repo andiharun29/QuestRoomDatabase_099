@@ -3,7 +3,7 @@ package com.example.pertemuan9.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pertemuan9.Data.entity.Mahasiswa
-import com.example.pertemuan9.Repository.LocalRepositoryMhs
+import com.example.pertemuan9.Repository.RepositoryMhs
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 
 class HomeMhsViewModel(
-    private val repositoryMhs: LocalRepositoryMhs
+    private val repositoryMhs: RepositoryMhs
 ) : ViewModel() {
     val homeUiState: StateFlow<HomeUiState> = repositoryMhs.getAllMhs()
         .filterNotNull()
